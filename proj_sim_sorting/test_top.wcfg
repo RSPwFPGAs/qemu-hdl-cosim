@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/bibo/work/pcie/kcu105/cosim_release_fpga2018/proj_sim_sorting/xsim/test_top.wdb" id="1">
+         <top_modules>
+            <top_module name="axi_bram_ctrl_funcs" />
+            <top_module name="axi_dma_pkg" />
+            <top_module name="glbl" />
+            <top_module name="ipif_pkg" />
+            <top_module name="lib_pkg" />
+            <top_module name="lmb_bram_if_funcs" />
+            <top_module name="mdm_funcs" />
+            <top_module name="test_top" />
+            <top_module name="vcomponents" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="72687083759fs"></ZoomEndTime>
+      <Cursor1Time time="32925555000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="230"></NameColumnWidth>
+      <ValueColumnWidth column_width="87"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="136" />
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_axi_ctl_aclk">
+      <obj_property name="ElementShortName">i_axi_ctl_aclk</obj_property>
+      <obj_property name="ObjectShortName">i_axi_ctl_aclk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_sys_rst_n">
+      <obj_property name="ElementShortName">i_sys_rst_n</obj_property>
+      <obj_property name="ObjectShortName">i_sys_rst_n</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_refclk">
+      <obj_property name="ElementShortName">i_refclk</obj_property>
+      <obj_property name="ObjectShortName">i_refclk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_axi_aclk">
+      <obj_property name="ElementShortName">o_axi_aclk</obj_property>
+      <obj_property name="ObjectShortName">o_axi_aclk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_axi_aresetn">
+      <obj_property name="ElementShortName">o_axi_aresetn</obj_property>
+      <obj_property name="ObjectShortName">o_axi_aresetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider127" type="divider">
+      <obj_property name="label">--------  axim_read  --------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arid">
+      <obj_property name="ElementShortName">o_m_arid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_araddr">
+      <obj_property name="ElementShortName">o_m_araddr[63:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_araddr[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arlen">
+      <obj_property name="ElementShortName">o_m_arlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arsize">
+      <obj_property name="ElementShortName">o_m_arsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arburst">
+      <obj_property name="ElementShortName">o_m_arburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arlock">
+      <obj_property name="ElementShortName">o_m_arlock</obj_property>
+      <obj_property name="ObjectShortName">o_m_arlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arcache">
+      <obj_property name="ElementShortName">o_m_arcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arprot">
+      <obj_property name="ElementShortName">o_m_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arregion">
+      <obj_property name="ElementShortName">o_m_arregion[3:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_arregion[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_arvalid">
+      <obj_property name="ElementShortName">o_m_arvalid</obj_property>
+      <obj_property name="ObjectShortName">o_m_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_arready">
+      <obj_property name="ElementShortName">i_m_arready</obj_property>
+      <obj_property name="ObjectShortName">i_m_arready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_rid">
+      <obj_property name="ElementShortName">i_m_rid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_m_rid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_rdata">
+      <obj_property name="ElementShortName">i_m_rdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_m_rdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_rresp">
+      <obj_property name="ElementShortName">i_m_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">i_m_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_rlast">
+      <obj_property name="ElementShortName">i_m_rlast</obj_property>
+      <obj_property name="ObjectShortName">i_m_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_rvalid">
+      <obj_property name="ElementShortName">i_m_rvalid</obj_property>
+      <obj_property name="ObjectShortName">i_m_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_rready">
+      <obj_property name="ElementShortName">o_m_rready</obj_property>
+      <obj_property name="ObjectShortName">o_m_rready</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider128" type="divider">
+      <obj_property name="label">--------  axim_write  --------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awid">
+      <obj_property name="ElementShortName">o_m_awid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awaddr">
+      <obj_property name="ElementShortName">o_m_awaddr[63:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awaddr[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/inst/o_m_awaddr">
+      <obj_property name="ElementShortName">o_m_awaddr[63:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awaddr[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/inst/axi4_m_w_inst/o_m_awaddr">
+      <obj_property name="ElementShortName">o_m_awaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/inst/axi4_m_w_inst/r_addr">
+      <obj_property name="ElementShortName">r_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/inst/axi4_m_w_inst/n_addr">
+      <obj_property name="ElementShortName">n_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">n_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/inst/axi4_m_w_inst/req_addr">
+      <obj_property name="ElementShortName">req_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">req_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awlen">
+      <obj_property name="ElementShortName">o_m_awlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awsize">
+      <obj_property name="ElementShortName">o_m_awsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awburst">
+      <obj_property name="ElementShortName">o_m_awburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awlock">
+      <obj_property name="ElementShortName">o_m_awlock</obj_property>
+      <obj_property name="ObjectShortName">o_m_awlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awcache">
+      <obj_property name="ElementShortName">o_m_awcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awprot">
+      <obj_property name="ElementShortName">o_m_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awregion">
+      <obj_property name="ElementShortName">o_m_awregion[3:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_awregion[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_awvalid">
+      <obj_property name="ElementShortName">o_m_awvalid</obj_property>
+      <obj_property name="ObjectShortName">o_m_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_awready">
+      <obj_property name="ElementShortName">i_m_awready</obj_property>
+      <obj_property name="ObjectShortName">i_m_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_wid">
+      <obj_property name="ElementShortName">o_m_wid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_wid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_wdata">
+      <obj_property name="ElementShortName">o_m_wdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_wdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_wlast">
+      <obj_property name="ElementShortName">o_m_wlast</obj_property>
+      <obj_property name="ObjectShortName">o_m_wlast</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_wstrb">
+      <obj_property name="ElementShortName">o_m_wstrb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_m_wstrb[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_wvalid">
+      <obj_property name="ElementShortName">o_m_wvalid</obj_property>
+      <obj_property name="ObjectShortName">o_m_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_wready">
+      <obj_property name="ElementShortName">i_m_wready</obj_property>
+      <obj_property name="ObjectShortName">i_m_wready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_bid">
+      <obj_property name="ElementShortName">i_m_bid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_m_bid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_bresp">
+      <obj_property name="ElementShortName">i_m_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">i_m_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_m_bvalid">
+      <obj_property name="ElementShortName">i_m_bvalid</obj_property>
+      <obj_property name="ObjectShortName">i_m_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_m_bready">
+      <obj_property name="ElementShortName">o_m_bready</obj_property>
+      <obj_property name="ObjectShortName">o_m_bready</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider129" type="divider">
+      <obj_property name="label">--------  axis_read  --------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arid">
+      <obj_property name="ElementShortName">i_s_arid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_araddr">
+      <obj_property name="ElementShortName">i_s_araddr[63:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_araddr[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arlen">
+      <obj_property name="ElementShortName">i_s_arlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arsize">
+      <obj_property name="ElementShortName">i_s_arsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arburst">
+      <obj_property name="ElementShortName">i_s_arburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arlock">
+      <obj_property name="ElementShortName">i_s_arlock</obj_property>
+      <obj_property name="ObjectShortName">i_s_arlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arcache">
+      <obj_property name="ElementShortName">i_s_arcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arprot">
+      <obj_property name="ElementShortName">i_s_arprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arregion">
+      <obj_property name="ElementShortName">i_s_arregion[3:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_arregion[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_arvalid">
+      <obj_property name="ElementShortName">i_s_arvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_arready">
+      <obj_property name="ElementShortName">o_s_arready</obj_property>
+      <obj_property name="ObjectShortName">o_s_arready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_rid">
+      <obj_property name="ElementShortName">o_s_rid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_rid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_rdata">
+      <obj_property name="ElementShortName">o_s_rdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_rdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_rresp">
+      <obj_property name="ElementShortName">o_s_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_rlast">
+      <obj_property name="ElementShortName">o_s_rlast</obj_property>
+      <obj_property name="ObjectShortName">o_s_rlast</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_rvalid">
+      <obj_property name="ElementShortName">o_s_rvalid</obj_property>
+      <obj_property name="ObjectShortName">o_s_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_rready">
+      <obj_property name="ElementShortName">i_s_rready</obj_property>
+      <obj_property name="ObjectShortName">i_s_rready</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider130" type="divider">
+      <obj_property name="label">--------  axis_write  --------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awid">
+      <obj_property name="ElementShortName">i_s_awid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awaddr">
+      <obj_property name="ElementShortName">i_s_awaddr[63:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awaddr[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awlen">
+      <obj_property name="ElementShortName">i_s_awlen[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awlen[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awsize">
+      <obj_property name="ElementShortName">i_s_awsize[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awsize[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awburst">
+      <obj_property name="ElementShortName">i_s_awburst[1:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awburst[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awlock">
+      <obj_property name="ElementShortName">i_s_awlock</obj_property>
+      <obj_property name="ObjectShortName">i_s_awlock</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awcache">
+      <obj_property name="ElementShortName">i_s_awcache[3:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awcache[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awprot">
+      <obj_property name="ElementShortName">i_s_awprot[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awprot[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awregion">
+      <obj_property name="ElementShortName">i_s_awregion[3:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_awregion[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_awvalid">
+      <obj_property name="ElementShortName">i_s_awvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_awready">
+      <obj_property name="ElementShortName">o_s_awready</obj_property>
+      <obj_property name="ObjectShortName">o_s_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_wid">
+      <obj_property name="ElementShortName">i_s_wid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_wid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_wdata">
+      <obj_property name="ElementShortName">i_s_wdata[255:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_wdata[255:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_wlast">
+      <obj_property name="ElementShortName">i_s_wlast</obj_property>
+      <obj_property name="ObjectShortName">i_s_wlast</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_wstrb">
+      <obj_property name="ElementShortName">i_s_wstrb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_wstrb[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_wvalid">
+      <obj_property name="ElementShortName">i_s_wvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_wready">
+      <obj_property name="ElementShortName">o_s_wready</obj_property>
+      <obj_property name="ObjectShortName">o_s_wready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_bid">
+      <obj_property name="ElementShortName">o_s_bid[2:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_bid[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_bresp">
+      <obj_property name="ElementShortName">o_s_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_bvalid">
+      <obj_property name="ElementShortName">o_s_bvalid</obj_property>
+      <obj_property name="ObjectShortName">o_s_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_bready">
+      <obj_property name="ElementShortName">i_s_bready</obj_property>
+      <obj_property name="ObjectShortName">i_s_bready</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider131" type="divider">
+      <obj_property name="label">--------  others  --------</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/interrupt_out">
+      <obj_property name="ElementShortName">interrupt_out</obj_property>
+      <obj_property name="ObjectShortName">interrupt_out</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/intx_msi_request">
+      <obj_property name="ElementShortName">intx_msi_request</obj_property>
+      <obj_property name="ObjectShortName">intx_msi_request</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/intx_msi_grant">
+      <obj_property name="ElementShortName">intx_msi_grant</obj_property>
+      <obj_property name="ObjectShortName">intx_msi_grant</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_araddr">
+      <obj_property name="ElementShortName">i_s_ctl_araddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_araddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_arvalid">
+      <obj_property name="ElementShortName">i_s_ctl_arvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_arvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_arready">
+      <obj_property name="ElementShortName">o_s_ctl_arready</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_arready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_rdata">
+      <obj_property name="ElementShortName">o_s_ctl_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_rresp">
+      <obj_property name="ElementShortName">o_s_ctl_rresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_rresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_rvalid">
+      <obj_property name="ElementShortName">o_s_ctl_rvalid</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_rvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_rready">
+      <obj_property name="ElementShortName">i_s_ctl_rready</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_rready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_awaddr">
+      <obj_property name="ElementShortName">i_s_ctl_awaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_awaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_awvalid">
+      <obj_property name="ElementShortName">i_s_ctl_awvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_awvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_awready">
+      <obj_property name="ElementShortName">o_s_ctl_awready</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_awready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_wdata">
+      <obj_property name="ElementShortName">i_s_ctl_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_wstrb">
+      <obj_property name="ElementShortName">i_s_ctl_wstrb[3:0]</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_wstrb[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_wvalid">
+      <obj_property name="ElementShortName">i_s_ctl_wvalid</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_wvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_wready">
+      <obj_property name="ElementShortName">o_s_ctl_wready</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_wready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_bresp">
+      <obj_property name="ElementShortName">o_s_ctl_bresp[1:0]</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_bresp[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/o_s_ctl_bvalid">
+      <obj_property name="ElementShortName">o_s_ctl_bvalid</obj_property>
+      <obj_property name="ObjectShortName">o_s_ctl_bvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/i_s_ctl_bready">
+      <obj_property name="ElementShortName">i_s_ctl_bready</obj_property>
+      <obj_property name="ObjectShortName">i_s_ctl_bready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_address">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_address[63:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_address[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_data">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_enable">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_enable[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_enable[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_fail">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_fail</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_fail</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_int">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_int</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_int</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_mask">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_mask[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_mask[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_sent">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_sent</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_sent</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_vf_enable">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_vf_enable[7:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_vf_enable[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/cfg_interrupt_msix_vf_mask">
+      <obj_property name="ElementShortName">cfg_interrupt_msix_vf_mask[7:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_interrupt_msix_vf_mask[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/pci_exp_rxn">
+      <obj_property name="ElementShortName">pci_exp_rxn[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pci_exp_rxn[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/pci_exp_rxp">
+      <obj_property name="ElementShortName">pci_exp_rxp[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pci_exp_rxp[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/pci_exp_txn">
+      <obj_property name="ElementShortName">pci_exp_txn[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pci_exp_txn[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/DUT/top_i/QEMUPCIeBridge_0/pci_exp_txp">
+      <obj_property name="ElementShortName">pci_exp_txp[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pci_exp_txp[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/PCIE_CLK_N">
+      <obj_property name="ElementShortName">PCIE_CLK_N</obj_property>
+      <obj_property name="ObjectShortName">PCIE_CLK_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/PCIE_CLK_P">
+      <obj_property name="ElementShortName">PCIE_CLK_P</obj_property>
+      <obj_property name="ObjectShortName">PCIE_CLK_P</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/PCIE_RX_N">
+      <obj_property name="ElementShortName">PCIE_RX_N[7:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIE_RX_N[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/PCIE_RX_P">
+      <obj_property name="ElementShortName">PCIE_RX_P[7:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIE_RX_P[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/PCIE_TX_N">
+      <obj_property name="ElementShortName">PCIE_TX_N[7:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIE_TX_N[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/test_top/PCIE_TX_P">
+      <obj_property name="ElementShortName">PCIE_TX_P[7:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIE_TX_P[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/PERSTN">
+      <obj_property name="ElementShortName">PERSTN</obj_property>
+      <obj_property name="ObjectShortName">PERSTN</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/FPGA_SYSCLK_N">
+      <obj_property name="ElementShortName">FPGA_SYSCLK_N</obj_property>
+      <obj_property name="ObjectShortName">FPGA_SYSCLK_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/FPGA_SYSCLK_P">
+      <obj_property name="ElementShortName">FPGA_SYSCLK_P</obj_property>
+      <obj_property name="ObjectShortName">FPGA_SYSCLK_P</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/RESET">
+      <obj_property name="ElementShortName">RESET</obj_property>
+      <obj_property name="ObjectShortName">RESET</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/UART_RXD_OUT">
+      <obj_property name="ElementShortName">UART_RXD_OUT</obj_property>
+      <obj_property name="ObjectShortName">UART_RXD_OUT</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/test_top/UART_TXD_IN">
+      <obj_property name="ElementShortName">UART_TXD_IN</obj_property>
+      <obj_property name="ObjectShortName">UART_TXD_IN</obj_property>
+   </wvobject>
+</wave_config>

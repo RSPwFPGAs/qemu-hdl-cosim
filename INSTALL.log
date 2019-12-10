@@ -1,0 +1,52 @@
+
+# install requirements
+sudo apt-get install libzmq3-dev libczmq-dev libncurses5-dev libncursesw5-dev
+sudo apt-get install libsdl2-dev
+
+# get qemu and apply patch
+cd $COSIM_REPO_HOME/qemu
+wget http://download.qemu-project.org/qemu-2.10.0-rc3.tar.xz
+tar -xJf qemu-2.10.0-rc3.tar.xz
+patch -s -p0 < qemu-cosim.patch
+
+# apply patch for "static declaration of ‘memfd_create’ follows non-static declaration"
+https://www.toradex.com/community/questions/24010/errors-with-glibc227-while-building-current-yocto.html
+
+# make build dir
+cd qemu-2.10.0-rc3
+mkdir build
+cd build
+
+# configure
+../configure --target-list=x86_64-softmmu --disable-vnc --enable-sdl --enable-curses
+
+# modify to include the bridge queue
+Modify config-host.mak, Add " -lzmq -lczmq" to the end of LIBS
+
+# build
+make -j32
+
+
+# install ubuntu16.04 as a guest
+http://www.ubuntubuzz.com/2016/05/how-to-install-ubuntu-in-qemukvm-virtual-machine.html
+https://www.how2shout.com/how-to/qemu-ubuntu-tutorial.html
+
+qemu-2.10.0-rc3/build/qemu-img create -f qcow2 cosim.qcow2 16G
+sudo qemu-2.10.0-rc3/build/x86_64-softmmu/qemu-system-x86_64 -boot d -cdrom /home/bibo/Downloads/ubuntu-16.04.6-server-amd64.iso -smp cpus=2 -accel kvm -m 4096 -hda cosim.qcow2
+
+
+# start the VM
+sudo -E x86_64-softmmu/qemu-system-x86_64 -m 4G -enable-kvm -cpu host -smp cores=1 -drive file=../../cosim.qcow2,cache=writethrough -device accelerator-pcie -redir tcp:2200::22
+
+
+# transfer files with scp
+https://www.cnx-software.com/2011/10/02/how-to-transfer-files-between-host-and-qemu-via-ssh-and-nfs/
+https://gnu-linux.org/creating-a-qemu-system-image-and-working-with-it-using-ssh-login.html
+
+scp -P 2200 -r software_sorting/ user@localhost:/home/user/.
+ssh -p 2200 user@localhost
+
+
+
+
+

@@ -1,0 +1,720 @@
+diff -Naur qemu-2.10.0-rc3.orig/accel/tcg/cpu-exec.c qemu-2.10.0-rc3/accel/tcg/cpu-exec.c
+--- qemu-2.10.0-rc3.orig/accel/tcg/cpu-exec.c	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/accel/tcg/cpu-exec.c	2018-02-15 10:59:35.251195258 -0500
+@@ -36,6 +36,8 @@
+ #include "sysemu/cpus.h"
+ #include "sysemu/replay.h"
+ 
++#include "acc/acc.h"
++
+ /* -icount align implementation. */
+ 
+ typedef struct SyncClocks {
+@@ -135,6 +137,38 @@
+ }
+ #endif /* CONFIG USER ONLY */
+ 
++//Instantiate HDL extern variables
++zsock_t *ls_sock;
++int hdl_lockstep = 1;
++int hdl_step_size = ICOUNT_STEP;
++int catchup_steps = 0;
++int64_t hdl_step_count = 100000000000L; /* initial buffer for boot */
++const int RCVHWM_VALUE = 1;
++
++uintptr_t wrapper_tcg_qemu_tb_exec(void *env, void *tb_ptr) {
++
++    //VM-HDL lock-step
++    if (hdl_lockstep) {
++        hdl_step_count -= 1;
++        while (hdl_step_count <= 0) {
++            if (ls_sock == NULL) { 
++                int port = atoi(getenv("COSIM_PORT"));
++                char buffer[50];
++                sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 6);
++                ls_sock = zsock_new_pull(buffer);
++                zsock_set_rcvhwm(ls_sock, RCVHWM_VALUE);
++            }
++            zframe_t* frame = zframe_recv(ls_sock);
++            assert(frame);
++            zframe_destroy(&frame);
++            do {
++                hdl_step_count += hdl_step_size;
++            } while (catchup_steps-- > 0);
++        }
++    }
++    return ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr);
++}
++
+ /* Execute a TB, and fix up the CPU state afterwards if necessary */
+ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
+ {
+diff -Naur qemu-2.10.0-rc3.orig/default-configs/pci.mak qemu-2.10.0-rc3/default-configs/pci.mak
+--- qemu-2.10.0-rc3.orig/default-configs/pci.mak	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/default-configs/pci.mak	2018-02-15 10:59:30.196304496 -0500
+@@ -44,3 +44,4 @@
+ CONFIG_IVSHMEM_DEVICE=$(CONFIG_IVSHMEM)
+ CONFIG_ROCKER=y
+ CONFIG_VHOST_USER_SCSI=$(and $(CONFIG_VHOST_USER),$(CONFIG_LINUX))
++CONFIG_ACCELERATOR=y
+diff -Naur qemu-2.10.0-rc3.orig/hmp.c qemu-2.10.0-rc3/hmp.c
+--- qemu-2.10.0-rc3.orig/hmp.c	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/hmp.c	2018-02-15 10:57:54.700367886 -0500
+@@ -49,6 +49,8 @@
+ #include <spice/enums.h>
+ #endif
+ 
++#include "acc/acc.h"
++
+ static void hmp_handle_error(Monitor *mon, Error **errp)
+ {
+     assert(errp);
+@@ -1044,6 +1046,26 @@
+     qmp_stop(NULL);
+ }
+ 
++void hmp_hdl_lockstep(Monitor *mon, const QDict *qdict)
++{
++    const char *option = qdict_get_try_str(qdict, "option");
++    if (!option || !strcmp(option, "on")) {
++        hdl_lockstep = 1;
++        hdl_step_count = 0;
++    } else if (!strcmp(option, "off")) {
++        hdl_lockstep = 0;
++    } else {
++        monitor_printf(mon, "unexpected option %s\n", option);
++    }
++}
++
++void hmp_hdl_stepsize(Monitor *mon, const QDict *qdict)
++{
++    monitor_printf(mon,"old step_size %d\n", hdl_step_size); 
++    hdl_step_size = qdict_get_try_int(qdict, "step", 8);
++    monitor_printf(mon,"new step_size %d\n", hdl_step_size); 
++}
++
+ void hmp_system_reset(Monitor *mon, const QDict *qdict)
+ {
+     qmp_system_reset(NULL);
+diff -Naur qemu-2.10.0-rc3.orig/hmp-commands.hx qemu-2.10.0-rc3/hmp-commands.hx
+--- qemu-2.10.0-rc3.orig/hmp-commands.hx	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/hmp-commands.hx	2018-02-15 10:57:54.696367972 -0500
+@@ -193,6 +193,35 @@
+ ETEXI
+ 
+     {
++        .name       = "hdl_lockstep",
++        .args_type  = "option:s?",
++        .params     = "[on|off]",
++        .help       = "toggle lockstep with HDL in emulation",
++        .cmd        = hmp_hdl_lockstep,
++    },
++
++STEXI
++@item hdl_lockstep [off]
++@findex hdl_lockstep
++Run the emulation in lock step mode with HDL simulation.
++If called with option off, the emulation returns to normal mode.
++ETEXI
++
++    {
++        .name       = "hdl_stepsize",
++        .args_type  = "step:i",
++        .params     = "step",
++        .help       = "adjust number of cycles qemu can step relative to hdl",
++        .cmd        = hmp_hdl_stepsize,
++    },
++
++STEXI
++@item hdl_stepsize @var{count}
++@findex hdl_stepsize
++Adjust the number of cycles qemu can step relative to hdl.
++ETEXI
++
++    {
+         .name       = "change",
+         .args_type  = "device:B,target:F,arg:s?,read-only-mode:s?",
+         .params     = "device filename [format [read-only-mode]]",
+diff -Naur qemu-2.10.0-rc3.orig/hmp.h qemu-2.10.0-rc3/hmp.h
+--- qemu-2.10.0-rc3.orig/hmp.h	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/hmp.h	2018-02-15 10:57:54.703367821 -0500
+@@ -95,6 +95,8 @@
+ void hmp_netdev_add(Monitor *mon, const QDict *qdict);
+ void hmp_netdev_del(Monitor *mon, const QDict *qdict);
+ void hmp_getfd(Monitor *mon, const QDict *qdict);
++void hmp_hdl_lockstep(Monitor *mon, const QDict *qdict);
++void hmp_hdl_stepsize(Monitor *mon, const QDict *qdict);
+ void hmp_closefd(Monitor *mon, const QDict *qdict);
+ void hmp_sendkey(Monitor *mon, const QDict *qdict);
+ void hmp_screendump(Monitor *mon, const QDict *qdict);
+diff -Naur qemu-2.10.0-rc3.orig/hw/misc/accelerator_pcie.c qemu-2.10.0-rc3/hw/misc/accelerator_pcie.c
+--- qemu-2.10.0-rc3.orig/hw/misc/accelerator_pcie.c	1969-12-31 19:00:00.000000000 -0500
++++ qemu-2.10.0-rc3/hw/misc/accelerator_pcie.c	2018-02-15 10:58:00.182249455 -0500
+@@ -0,0 +1,414 @@
++/*
++ * QEMU PCIe device for communication with HDL simulation.
++ */
++
++#include "qemu/osdep.h"
++#include "qapi/error.h"
++#include "qemu/cutils.h"
++#include "hw/hw.h"
++#include "hw/i386/pc.h"
++#include "hw/pci/pci.h"
++#include "hw/pci/msi.h"
++#include "sysemu/kvm.h"
++#include "migration/migration.h"
++#include "qemu/error-report.h"
++#include "qom/object_interfaces.h"
++#include "qapi/visitor.h"
++#include "net/net.h"
++#include "acc/acc.h"
++
++
++#define ACCELERATOR_EPRINTF(fmt, ...)                                          \
++    do {                                                                       \
++        fprintf(stderr, "ACCELERATOR: " fmt, ##__VA_ARGS__);                   \
++    } while (0)
++#if 0
++#define ACCELERATOR_DPRINTF(fmt, ...)										   \
++    do {                                                                       \
++        fprintf(stderr, "ACCELERATOR: " fmt, ##__VA_ARGS__);                   \
++    } while (0)
++#else
++#define ACCELERATOR_DPRINTF(fmt, ...)
++#endif
++typedef struct ACCPCIeState {
++    PCIDevice parent_obj;
++
++    /* BARs */
++    MemoryRegion bar0;
++    MemoryRegion bar1;
++
++    /* NIC */
++    NICState *nic;
++    NICConf conf;
++
++    /* QEMU-HDL Communication Channels */
++    zsock_t *qemu_req;
++    zsock_t *qemu_resp;
++    zsock_t *hdl_req;
++    zsock_t *hdl_resp;
++    zsock_t *nic_req;
++    zsock_t *nic_resp;
++} ACCPCIeState;
++
++#define TYPE_ACC_PCIE "accelerator-pcie"
++#define ACC_PCIE(obj) OBJECT_CHECK(ACCPCIeState, (obj), TYPE_ACC_PCIE)
++
++
++/*
++Callback for write operation on BAR0. This is where data is sent from QEMU to
++HDL over ZMQ sockets. When creating a new BAR with MMIO it is important that
++this callback is implemented for that BAR (address translation is done on HDL
++side, hence the correct offsets need to be added.)
++*/
++#define MMIO_WRITE_BAR(_num)                                                   \
++    static void mmio_write_bar##_num(void *opaque, hwaddr addr, uint64_t val,  \
++                                     unsigned size) {                          \
++        ACCPCIeState *s = opaque;                                              \
++        ACCData acc_req;                                                       \
++        /*memset(&acc_req, 0, sizeof(ACCData));*/                              \
++        /*Important to add offset for the BAR as address translation is done   \
++         * on HDL side */                                                      \
++        acc_req.address = (uint64_t)(addr) + BAR_OFFSET_BAR##_num;             \
++        memcpy(&acc_req.data, &val, sizeof(uint64_t));                         \
++        acc_req.op = WRITE;                                                    \
++        acc_req.data_size = size;                                              \
++        /*Create frame containing data to send */                              \
++        zframe_t *frame = zframe_new(&acc_req, sizeof(ACCData));               \
++        if (!frame) {                                                          \
++            ACCELERATOR_EPRINTF("BAR[%d] WR ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++        /* Send frame:                                                         \
++           ZMQ write is non-blocking while the library's underlying queue is   \
++           not full. when it is, send is blocking.                             \
++        */                                                                     \
++        int rv = zframe_send(&frame, s->qemu_req, 0);                          \
++        if (rv != 0) {                                                         \
++            ACCELERATOR_EPRINTF("BAR[%d] WR ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++        /* Wait for response */                                                \
++        frame = zframe_recv(s->qemu_resp);                                     \
++        if (!frame) {                                                          \
++            ACCELERATOR_EPRINTF("BAR[%d] WR ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++    }
++
++MMIO_WRITE_BAR(0)
++
++/*
++Callback for read operation on BAR0. This is a blocking read. QEMU will "hang"
++while HDL services the read request. It will return when HDL has responded with
++data over socket. There is no timeout and this can cause the program to hang
++indefinitely.
++*/
++#define MMIO_READ_BAR(_num)                                                    \
++    static uint64_t mmio_read_bar##_num(void *opaque, hwaddr addr,             \
++                                        unsigned size) {                       \
++        ACCPCIeState *s = opaque;                                              \
++        ACCData acc_req;                                                       \
++        /*memset(&acc_req, 0, sizeof(ACCData));*/                              \
++        /* Setup request fields                                                \
++           Important to add offset for the BAR as address translation is done  \
++           on HDL side                                                         \
++        */                                                                     \
++        acc_req.address = (uint64_t)(addr) + BAR_OFFSET_BAR##_num;             \
++        acc_req.op = READ;                                                     \
++        acc_req.data_size = size;                                              \
++        /* Create frame containing data to send */                             \
++        zframe_t *frame = zframe_new(&acc_req, sizeof(ACCData));               \
++        if (!frame) {                                                          \
++            ACCELERATOR_EPRINTF("BAR[%d] RD ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++        /* Send frame */                                                       \
++        int rv = zframe_send(&frame, s->qemu_req, 0);                          \
++        if (rv != 0) {                                                         \
++            ACCELERATOR_EPRINTF("BAR[%d] RD ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++        /* Wait for response */                                                \
++        frame = zframe_recv(s->qemu_resp);                                     \
++        if (!frame) {                                                          \
++            ACCELERATOR_EPRINTF("BAR[%d] RD ERROR %s:%d\n", _num, __func__,    \
++                                __LINE__);                                     \
++        }                                                                      \
++        ACCData *acc_data = (ACCData *)zframe_data(frame);                     \
++        uint64_t data = 0;													   \
++		switch(size) {														   \
++			case 1:															   \
++				data = *(uint8_t*)acc_data->data;                              \
++				break;														   \
++			case 2:															   \
++				data = *(uint16_t*)acc_data->data;                             \
++				break;														   \
++			case 4:															   \
++				data = *(uint32_t*)acc_data->data;                             \
++				break;														   \
++			case 8:															   \
++				data = *(uint64_t*)acc_data->data;                             \
++				break;														   \
++			default:														   \
++				ACCELERATOR_EPRINTF("BAR[%d] Unsupported read size %u\n",     \
++															  _num, size);     \
++		}																	   \
++		ACCELERATOR_DPRINTF("BAR[%d] RD %016lx:   %lx\n", _num, addr, data);   \
++        zframe_destroy(&frame);                                                \
++        return data;                                                           \
++    }
++
++MMIO_READ_BAR(0)
++
++/*
++Callback called when there is activity on the HDL request socket. This callback
++will handle the request made by HDL and respond appropriately. Since address
++translation is done on HDL side, no need for it on QEMU.
++*/
++static void handle_hdl_request(void *opaque) {
++    // ACCELERATOR_DPRINTF("in %s:%d\n", __func__, __LINE__);
++    ACCPCIeState *s = opaque;
++    PCIDevice *dev = PCI_DEVICE(s);
++    // Poller so that no hdl packets are missed
++    zpoller_t *poller = zpoller_new(s->hdl_req, NULL);
++    if (!poller) {
++        ACCELERATOR_EPRINTF("HDL REQ ERROR %s:%d\n", __func__, __LINE__);
++    }
++    while (1) {
++        zsock_t *which = (zsock_t *)zpoller_wait(poller, 0);
++        int terminate = zpoller_expired(poller) || zpoller_terminated(poller) ||
++                        which != s->hdl_req;
++
++        if (terminate) {
++            zpoller_destroy(&poller);
++            return;
++        }
++
++        zframe_t *frame = zframe_recv(s->hdl_req);
++        if (!frame) {
++            ACCELERATOR_EPRINTF("HDL REQ ERROR %s:%d\n", __func__, __LINE__);
++        }
++        ACCData *acc_data = (ACCData *)zframe_data(frame);
++
++        ACCOp req = acc_data->op;
++        uint64_t addr = acc_data->address;
++        switch (req) {
++        case READ:
++            ACCELERATOR_DPRINTF("Host read request\n");
++            cpu_physical_memory_read(addr, acc_data->data, acc_data->data_size);
++            // Send frame
++            int rv = zframe_send(&frame, s->hdl_resp, ZFRAME_REUSE);
++            if (rv != 0) {
++                ACCELERATOR_EPRINTF("HDL REQ ERROR %s:%d\n", __func__,
++                                    __LINE__);
++            }
++            break;
++        case WRITE:
++            ACCELERATOR_DPRINTF("Host write request\n");
++            cpu_physical_memory_write(addr, acc_data->data,
++                                      acc_data->data_size);
++            break;
++        case INTR:
++            ACCELERATOR_DPRINTF("Host intr request\n");
++            msi_notify(dev, acc_data->vector);
++            break;
++        case NOOP:
++        default:
++            break;
++        }
++        zframe_destroy(&frame);
++    }
++}
++
++/*
++MMIO options for BAR region
++*/
++#define MEM_REGION_OPS_BAR(_num)                                               \
++    static const MemoryRegionOps mmio_ops_bar##_num = {                        \
++        .read = mmio_read_bar##_num,                                           \
++        .write = mmio_write_bar##_num,                                         \
++        .endianness = DEVICE_NATIVE_ENDIAN,                                    \
++        .valid =                                                               \
++            {                                                                  \
++                .min_access_size = 1, .max_access_size = 8,                    \
++            },                                                                 \
++        .impl =                                                                \
++            {                                                                  \
++                .min_access_size = 1, .max_access_size = 8,                    \
++            },                                                                 \
++    };
++
++MEM_REGION_OPS_BAR(0)
++
++// NIC Features
++// Transmit processed packet recieved from HDL
++static void net_tx_packet(void *opaque) {
++    ACCPCIeState *s = opaque;
++    ACCELERATOR_DPRINTF("in %s:%d\n", __func__, __LINE__);
++    zpoller_t *poller = zpoller_new(s->nic_resp, NULL);
++    assert(poller);
++    //ZMQ doesn't write until the last send (i.e all the partial messages are here)
++    while (1) {
++        zsock_t *which = (zsock_t *)zpoller_wait(poller, 0);
++        int terminate = zpoller_expired(poller) || zpoller_terminated(poller) ||
++                        which != s->nic_resp;
++        if (terminate) {
++            zpoller_destroy(&poller);
++            return;
++        }
++        // ACCELERATOR_DPRINTF("NIC: recieved packet from hdl\n");
++        // ACCELERATOR_DPRINTF("in %s:%d\n", __func__, __LINE__);
++        zframe_t *frame = zframe_recv(s->nic_resp);
++        assert(frame);
++        ACCNICData *acc_data = (ACCNICData *)zframe_data(frame);        
++        ACCELERATOR_DPRINTF("NIC: Sending packet to world\n");
++        qemu_send_packet(qemu_get_queue(s->nic), acc_data->data, acc_data->size);
++        zframe_destroy(&frame);
++    }
++}
++
++// Recieve packet from OS and send to HDL NIC
++static ssize_t net_rx_packet(NetClientState *nc, const uint8_t *buf,
++                             size_t size) {
++    ACCELERATOR_DPRINTF("in %s:%d\n", __func__, __LINE__);
++    ACCPCIeState *s = qemu_get_nic_opaque(nc);
++    ACCNICData acc_req;
++    //memset(&acc_req, 0, sizeof(ACCNICData));
++    acc_req.size = size;
++    acc_req.id = 1;
++    memcpy(acc_req.data, buf, size);
++    // Create frame containing data to send
++    zframe_t *frame = zframe_new(&acc_req, sizeof(ACCNICData));
++    assert(frame);
++    // Send frame
++    int rv = zframe_send(&frame, s->nic_req, 0);
++    assert(rv == 0);
++    ACCELERATOR_DPRINTF("NIC: sent packet to hdl\n");
++    return size;
++}
++
++// NIC Info
++static NetClientInfo net_acc_info = {
++    .type = NET_CLIENT_DRIVER_NIC,
++    .size = sizeof(ACCPCIeState),
++    .receive = net_rx_packet
++};
++
++static void acc_pcie_realize(PCIDevice *dev, Error **errp) {
++
++    ACCPCIeState *s = ACC_PCIE(dev);
++    DeviceState *d = DEVICE(dev);
++    
++    uint8_t *pci_conf;
++    pci_conf = dev->config;
++    pci_conf[PCI_COMMAND] = PCI_COMMAND_IO | PCI_COMMAND_MEMORY;
++
++    // Initialize BAR regions
++    memory_region_init_io(&s->bar0, OBJECT(s), &mmio_ops_bar0, s, "bar0-mmio",
++                          (uint64_t)REGION_SIZE_BAR0);
++
++    // Register BAR regions
++    pci_register_bar(dev, 0, PCI_BASE_ADDRESS_SPACE_MEMORY, &s->bar0);
++    // PCI_BASE_ADDRESS_SPACE_MEMORY | PCI_BASE_ADDRESS_MEM_PREFETCH | PCI_BASE_ADDRESS_MEM_TYPE_64;
++
++    // Open ZeroMQ connections to HDL
++    int port = atoi(getenv("COSIM_PORT"));
++    //initialize 0mq sockets
++    char buffer[50];
++    // request from qemu
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, SEND_SOCK, port);
++    s->qemu_req = zsock_new_push(buffer);
++    // hdl response to request
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 1);
++    s->qemu_resp = zsock_new_pull(buffer);
++    // request from hdl
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 2);
++    s->hdl_req = zsock_new_pull(buffer);
++    // qemu response to request
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, SEND_SOCK, port + 3);
++    s->hdl_resp = zsock_new_push(buffer);
++    // nic request
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, SEND_SOCK, port + 4);
++    s->nic_req = zsock_new_push(buffer);
++    // nic response
++    memset(buffer, 0, 50);
++    sprintf(buffer, SOCK_BASE, RECV_SOCK, port + 5);
++    s->nic_resp = zsock_new_pull(buffer);
++    assert(s->qemu_req && s->qemu_resp);
++    assert(s->hdl_req && s->hdl_resp);
++    assert(s->nic_req && s->nic_resp);
++
++    // Listen for requests from HDL (register zsock fd with QEMU)
++    size_t opt_len = sizeof(int *);
++    int hdl_fd, nic_fd;
++    void *zmq_sock = zsock_resolve(s->hdl_req);
++    int rv = zmq_getsockopt(zmq_sock, ZMQ_FD, &hdl_fd, &opt_len);
++    assert(rv == 0);
++    qemu_set_fd_handler(hdl_fd, handle_hdl_request, NULL, s);
++    zmq_sock = zsock_resolve(s->nic_resp);
++    rv = zmq_getsockopt(zmq_sock, ZMQ_FD, &nic_fd, &opt_len);
++    assert(rv == 0);
++    qemu_set_fd_handler(nic_fd, net_tx_packet, NULL, s);
++
++    // NIC init
++    s->nic = qemu_new_nic(&net_acc_info, &s->conf,
++                          object_get_typename(OBJECT(dev)), d->id, s);
++    qemu_format_nic_info_str(qemu_get_queue(s->nic), s->conf.macaddr.a);
++    
++    // MSI init
++    msi_init(dev, 0x00, NUM_MSI_VEC, false, false, errp);
++}
++
++/* TODO Is this needed? */
++static void acc_pcie_exit(PCIDevice *dev) {
++    ACCPCIeState *s = ACC_PCIE(dev);
++    zsock_destroy(&s->hdl_req);
++    zsock_destroy(&s->hdl_resp);
++    zsock_destroy(&s->qemu_req);
++    zsock_destroy(&s->qemu_resp);
++    zsock_destroy(&s->nic_req);
++    zsock_destroy(&s->nic_resp);
++    zsock_destroy(&ls_sock);
++}
++static void acc_pcie_reset(DeviceState *ds) { /*TODO*/
++}
++
++static Property acc_pcie_properties[] = {
++    DEFINE_NIC_PROPERTIES(ACCPCIeState, conf), 
++    DEFINE_PROP_END_OF_LIST(),
++};
++
++static void acc_pcie_class_init(ObjectClass *klass, void *data) {
++    DeviceClass *dc = DEVICE_CLASS(klass);
++    PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);
++
++    k->realize = acc_pcie_realize;
++    k->exit = acc_pcie_exit;
++    k->vendor_id = ACC_VENDOR_ID;
++    k->device_id = ACC_DEVICE_ID;
++    k->class_id = PCI_CLASS_NETWORK_ETHERNET;
++    k->revision = 1;
++
++    dc->reset = acc_pcie_reset;
++    set_bit(DEVICE_CATEGORY_MISC, dc->categories);
++    dc->props = acc_pcie_properties;
++    dc->desc = "PCIe HDL-VM Data Transfer with NIC Support";
++}
++
++static const TypeInfo acc_pcie_info = {
++    .name = TYPE_ACC_PCIE,
++    .parent = TYPE_PCI_DEVICE,
++    .instance_size = sizeof(ACCPCIeState),
++    .class_init = acc_pcie_class_init
++};
++
++static void acc_pcie_register_types(void) {
++    type_register_static(&acc_pcie_info);
++}
++
++type_init(acc_pcie_register_types);
+diff -Naur qemu-2.10.0-rc3.orig/hw/misc/Makefile.objs qemu-2.10.0-rc3/hw/misc/Makefile.objs
+--- qemu-2.10.0-rc3.orig/hw/misc/Makefile.objs	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/hw/misc/Makefile.objs	2018-02-15 10:58:00.627239841 -0500
+@@ -59,3 +59,5 @@
+ obj-$(CONFIG_AUX) += auxbus.o
+ obj-$(CONFIG_ASPEED_SOC) += aspeed_scu.o aspeed_sdmc.o
+ obj-y += mmio_interface.o
++
++obj-$(CONFIG_ACCELERATOR) += accelerator_pcie.o
+diff -Naur qemu-2.10.0-rc3.orig/include/acc/acc.h qemu-2.10.0-rc3/include/acc/acc.h
+--- qemu-2.10.0-rc3.orig/include/acc/acc.h	1969-12-31 19:00:00.000000000 -0500
++++ qemu-2.10.0-rc3/include/acc/acc.h	2018-02-15 10:59:52.886814132 -0500
+@@ -0,0 +1,99 @@
++#include <errno.h>
++#include <czmq.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <zmq.h>
++
++// DEVICE SPECS
++#define ACC_VENDOR_ID (0x1337)
++#define ACC_DEVICE_ID (0x0001)
++
++// BAR REGION OFFSET
++#define BAR_OFFSET_BAR0 (0xE0000000U)
++#define BAR_OFFSET_BAR2 (0xC0000000U)
++// Size of BAR regions
++#define REGION_SIZE_BAR0 (512 * (1 << 20)) // 512mb
++#define REGION_SIZE_BAR2 (1 * (1 << 30))   // 1g
++// Number of MSI Interrupts
++#define NUM_MSI_VEC (1)
++
++#define PKTBUFSZ (10000)
++#define BUFSZ (4096) /* 4K bytes buffer size */
++
++#define AXI_MAX_SIZE (128)
++
++#define ADDRW (32)
++#define BUSW (32)
++
++#define ICOUNT_INIT (100000)
++#define ICOUNT_STEP (8)
++
++extern zsock_t *ls_sock;
++extern int hdl_lockstep;
++extern int hdl_step_size;
++extern int64_t hdl_step_count;
++extern int catchup_steps;
++
++/*
++Provided as an alternative to TCP port sockets
++#define QEMU_TO_HDL_REQ "ipc:///tmp/qemu_hdl_request.sock"
++#define QEMU_TO_HDL_REP "ipc:///tmp/qemu_hdl_response.sock"
++#define HDL_TO_QEMU_REQ "ipc:///tmp/hdl_qemu_request.sock"
++#define HDL_TO_QEMU_REP "ipc:///tmp/hdl_qemu_response.sock"
++#define NIC_REQ         "ipc:///tmp/nic_request.sock"
++#define NIC_REP         "ipc:///tmp/nic_response.sock"
++#define ICOUNT_SOCK     "ipc:///tmp/icount.sock"
++*/
++
++#define TCP_MODE  "%stcp://127.0.0.1:%d"
++#define IPC_MODE  "%sipc:///tmp/cosim-%d.sock"
++#define SOCK_BASE TCP_MODE
++
++#define SEND_SOCK "@"
++#define RECV_SOCK ">"
++
++#define QEMU_TO_HDL_REQ "tcp://127.0.0.1:21100"
++#define QEMU_TO_HDL_REP "tcp://127.0.0.1:21101"
++#define HDL_TO_QEMU_REQ "tcp://127.0.0.1:21102"
++#define HDL_TO_QEMU_REP "tcp://127.0.0.1:21103"
++#define NIC_REQ         "tcp://127.0.0.1:21104"
++#define NIC_REP         "tcp://127.0.0.1:21105"
++#define ICOUNT_SOCK     "tcp://127.0.0.1:21106"
++#define ICOUNT_SOCK2    "tcp://127.0.0.1:21107"
++
++/* Sorting platform */
++
++typedef enum ACCOperations { NOOP, READ, WRITE, INTR } ACCOp;
++
++typedef enum QEMUOperations { M_RD = 1, M_WR, S_RD } QEMUOp;
++
++typedef struct {
++  uint32_t id;               /* transaction id - unused */
++  uint32_t data_size;        /* size of data sent */
++  uint64_t address;          /* address on which operation was made */
++  ACCOp op;                  /* type of operation */
++  unsigned char data[BUFSZ]; /* data buffer */
++  uint32_t vector;           /* interrupt vector */
++} ACCData;
++
++typedef struct {
++  uint8_t last;
++  uint32_t size;
++  uint32_t id;
++  unsigned char data[BUFSZ]; /* Temporarily 4k max packet size */
++} ACCNICData;
++
++typedef struct {
++    uint64_t addr;
++    uint32_t burst;
++    uint32_t size;
++} MRDArgs;
++
++typedef struct {
++    uint64_t addr;
++    uint32_t burst;
++    uint32_t size;
++    uint32_t strobe;
++} MWRArgs;
++
+diff -Naur qemu-2.10.0-rc3.orig/target/i386/translate.c qemu-2.10.0-rc3/target/i386/translate.c
+--- qemu-2.10.0-rc3.orig/target/i386/translate.c	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/target/i386/translate.c	2018-02-15 10:59:31.660272859 -0500
+@@ -31,6 +31,7 @@
+ #include "trace-tcg.h"
+ #include "exec/log.h"
+ 
++#include "acc/acc.h"
+ 
+ #define PREFIX_REPZ   0x01
+ #define PREFIX_REPNZ  0x02
+@@ -8527,7 +8528,7 @@
+             gen_eob(dc);
+             break;
+         }
+-        if (singlestep) {
++        if (singlestep || hdl_lockstep) {
+             gen_jmp_im(pc_ptr - dc->cs_base);
+             gen_eob(dc);
+             break;
+diff -Naur qemu-2.10.0-rc3.orig/tcg/tcg.h qemu-2.10.0-rc3/tcg/tcg.h
+--- qemu-2.10.0-rc3.orig/tcg/tcg.h	2017-08-15 14:39:41.000000000 -0400
++++ qemu-2.10.0-rc3/tcg/tcg.h	2018-02-15 10:59:53.493801014 -0500
+@@ -1103,11 +1103,16 @@
+ #define TB_EXIT_IDX1 1
+ #define TB_EXIT_REQUESTED 3
+ 
++uintptr_t wrapper_tcg_qemu_tb_exec(void *env, void *tb_ptr);
++
+ #ifdef HAVE_TCG_QEMU_TB_EXEC
+ uintptr_t tcg_qemu_tb_exec(CPUArchState *env, uint8_t *tb_ptr);
+ #else
+-# define tcg_qemu_tb_exec(env, tb_ptr) \
++#define tcg_qemu_tb_exec(env, tb_ptr) wrapper_tcg_qemu_tb_exec(env, tb_ptr)
++/*
++#define tcg_qemu_tb_exec(env, tb_ptr) \
+     ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr)
++*/
+ #endif
+ 
+ void tcg_register_jit(void *buf, size_t buf_size);
