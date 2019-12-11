@@ -150,6 +150,7 @@ Shutdown and backup the image
 >    cd $COSIM_REPO_HOME/proj_sim_sorting
 >    source run_sim.sh
 
+The waveform window will show AXI transactions when the application is launched in the VM.
 
 <a name="runapp"></a>
 ## Run application in Guest
@@ -188,7 +189,7 @@ Shutdown and backup the image
 >```bash
 >    sudo ./sort
 
-6. The program will first print unsorted data, then print sorted result.
+The program will first print unsorted data, then print sorted result.
 
 
 
