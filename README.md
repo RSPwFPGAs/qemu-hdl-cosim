@@ -1,10 +1,22 @@
+<span style="display: inline-block;">
+
+# Table of Contents
+1. [Overview of qemu-hdl-cosim](#overview)
+2. [Install Qemu and Create a VM image on Host](#installhost)
+3. [Run Co-Simulation](#runcosim)
+    - [Run Vivado Xsim in Host](#runxsim)
+    - [Run application in Guest](#runapp)
+
+<a name="overview"></a>
+# Overview of qemu-hdl-cosim
+
 This repository contains work by `COMPAS Lab`. The original project introduction is [here](http://compas.cs.stonybrook.edu/projects/fpgacloud/vm-hdl-cosim/). Please site the [paper](http://compas.cs.stonybrook.edu/~shcho/publication/FPGA_2018_CoSim.pdf) and read the [presentation](http://www.isfpga.org/fpga2018/slides/2-3.pptx).
 
-The [demo code](https://compas.cs.stonybrook.edu/wordpress/wp-content/uploads/2018/02/cosim_release_fpga2018.tar.gz) is ported here to use XSim instead of VCS, with minor improvements to the README.
+The [demo code](https://compas.cs.stonybrook.edu/wordpress/wp-content/uploads/2018/02/cosim_release_fpga2018.tar.gz) is ported here to use Vivado XSim instead of VCS, with minor improvements to the README.
+This example source release is the cosim demo for an accelerated sorting application.
 
-# README
-
-This example source release is the cosim demo for the sorting platform.
+Install Tools
+----------------------------
 This release has been tested with the following tools and libs:
 >
 >```
@@ -12,7 +24,6 @@ This release has been tested with the following tools and libs:
 >Vivado 2018.3
 >QEMU 2.10 rc3
 >```
-
 
 Environment variables to set
 ----------------------------
@@ -23,6 +34,8 @@ Environment variables to set
 >              the same machine, each one needs to have a different number.
 >```
 
+<a name="installhost"></a>
+# Install Qemu and Create a VM image on Host
 
 Compile QEMU
 ----------------------------
@@ -68,8 +81,6 @@ Compile QEMU
 >    cp ../../../scripts/launch_fpga.sh ./
 >    cd ../../
 
-
-
 Create a QEMU image
 ----------------------------
 1. Create a QEMU image file called cosim.qcow2 in $COSIM_REPO_HOME/qemu and install Ubuntu 16.04.3.
@@ -80,7 +91,7 @@ Create a QEMU image
 >    sudo qemu-2.10.0-rc3/build/x86_64-softmmu/qemu-system-x86_64 -boot d -cdrom /path/to/ubuntu-16.04.6-server-amd64.iso -smp cpus=2 -accel kvm -m 4096 -hda cosim.qcow2
 >    (name: user; passwd: user)
 
-2. Launch QEMU 
+2. Launch QEMU in one terminal
 
 >
 >```bash
@@ -88,13 +99,13 @@ Create a QEMU image
 >    ./launch_fpga.sh
 >    (sudo -E x86_64-softmmu/qemu-system-x86_64 -m 4G -enable-kvm -cpu host -smp cores=1 -drive file=../../cosim.qcow2,cache=writethrough -device accelerator-pcie -redir tcp:2200::22 -display none)
 
-3. Log in to the VM from ssh port 2200
+3. Log in to the VM in another terminal
 
 >
 >```bash
 >    ssh -p 2200 user@localhost
 
-3. In the VM, Install necessary tools for compiling userspace program and kernel module.
+4. In the VM, Install necessary tools for compiling userspace program and kernel module
 
 >
 >```bash
@@ -102,44 +113,37 @@ Create a QEMU image
 >    sudo apt-get upgrade
 >    sudo apt-get install build-essential
 
-4. In the host, Copy $COSIM_REPO_HOME/software_sorting to the image.
+Copy driver and application to the image
+----------------------------
+1. Copy $COSIM_REPO_HOME/software_sorting to the image.
 
 >
 >```bash
 >    cd $COSIM_REPO_HOME
 >    scp -P 2200 -r software_sorting/ user@localhost:/home/user/.
 
-
-Launch QEMU with accelerator
+Shutdown and backup the image
 ----------------------------
-1. Launching QEMU with accelerator
+1. In the VM, shutdown the VM
 
 >
 >```bash
->    cd $COSIM_REPO_HOME/qemu/qemu-2.10.0-rc3/build
->    ./launch_fpga.sh
+>    sudo poweroff
 
-2. In the VM, compile and load driver
-
+2. In the host, Backup the installed image
 >
 >```bash
->    cd software_sorting/driver/
->    ./loadRunModule.sh
-
-3. In the VM, compile the user space program
-
->
->```bash
->    cd ../application
->    gcc sort.c -o sort
-
-4. Wait here and use another terminal to launch Vivado XSim
+>    cd $COSIM_REPO_HOME/qemu
+>    zip cosim.qcow2.zip cosim.qcow2
 
 
+<a name="runcosim"></a>
+# Run co-simulation
 
-Launch Vivado XSim
-----------------------------
-1. Launch Vivado XSim Simulation
+<a name="runxsim"></a>
+## Run Vivado Xsim in Host
+
+1. In the host, Launch Vivado XSim Simulation in the 1st terminal
 
 >
 >```bash
@@ -147,17 +151,44 @@ Launch Vivado XSim
 >    source run_sim.sh
 
 
+<a name="runapp"></a>
+## Run application in Guest
 
-Run the sorting program
-----------------------------
+1. In the host, Launch QEMU with accelerator in the 2nd terminal
 
-1. In the VM, run the sort program
+>
+>```bash
+>    cd $COSIM_REPO_HOME/qemu/qemu-2.10.0-rc3/build
+>    ./launch_fpga.sh
+>    (sudo -E x86_64-softmmu/qemu-system-x86_64 -m 4G -enable-kvm -cpu host -smp cores=1 -drive file=../../cosim.qcow2,cache=writethrough -device accelerator-pcie -redir tcp:2200::22 -display none)
+
+2. In the host, Log in to the VM in the 3rd terminal
+
+>
+>```bash
+>    ssh -p 2200 user@localhost
+
+3. In the VM, compile and load driver
+
+>
+>```bash
+>    cd software_sorting/driver/
+>    ./loadRunModule.sh
+
+4. In the VM, compile the user space program
+
+>
+>```bash
+>    cd ../application
+>    gcc sort.c -o sort
+
+5. In the VM, run the sort program
 
 >
 >```bash
 >    sudo ./sort
 
-2. The program will first print unsorted data, then print sorted result.
+6. The program will first print unsorted data, then print sorted result.
 
 
 
