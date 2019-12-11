@@ -4,8 +4,8 @@
 1. [Overview of qemu-hdl-cosim](#overview)
 2. [Install Qemu and Create a VM image](#installhost)
 3. [Run Co-Simulation](#runcosim)
-    - [Run Vivado Xsim in Host](#runxsim)
-    - [Run application in Guest](#runapp)
+    - [Run Vivado XSim in Host Machine](#runxsim)
+    - [Run application in Guest Machine](#runapp)
 
 <a name="overview"></a>
 # Overview of qemu-hdl-cosim
@@ -141,7 +141,7 @@ Shutdown and backup the image
 # Run co-simulation
 
 <a name="runxsim"></a>
-## Run Vivado Xsim in Host
+## Run Vivado XSim in Host Machine
 
 1. In the host, Launch Vivado XSim Simulation in the 1st terminal
 
@@ -153,7 +153,7 @@ Shutdown and backup the image
 The waveform window will show AXI transactions when the application is launched in the VM.
 
 <a name="runapp"></a>
-## Run application in Guest
+## Run application in Guest Machine
 
 1. In the host, Launch QEMU with accelerator in the 2nd terminal
 
