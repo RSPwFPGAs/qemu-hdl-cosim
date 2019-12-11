@@ -122,9 +122,9 @@ Copy driver and application to the image
 >    cd $COSIM_REPO_HOME
 >    scp -P 2200 -r software_sorting/ user@localhost:/home/user/.
 
-Shutdown and backup the image
+Shutdown and Backup the image(Optional)
 ----------------------------
-1. In the VM, shutdown the VM
+1. In the VM, Shutdown the VM
 
 >
 >```bash
