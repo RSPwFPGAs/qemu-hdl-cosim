@@ -1,6 +1,6 @@
 This repository contains work by `COMPAS Lab`. The original project introduction is [here](http://compas.cs.stonybrook.edu/projects/fpgacloud/vm-hdl-cosim/). Please site the [paper](http://compas.cs.stonybrook.edu/~shcho/publication/FPGA_2018_CoSim.pdf) and read the [presentation](http://www.isfpga.org/fpga2018/slides/2-3.pptx).
 
-The [demo code](https://compas.cs.stonybrook.edu/wordpress/wp-content/uploads/2018/02/cosim_release_fpga2018.tar.gz) is ported to use XSim instead of VCS, with minor improvements to the README.
+The [demo code](https://compas.cs.stonybrook.edu/wordpress/wp-content/uploads/2018/02/cosim_release_fpga2018.tar.gz) is ported here to use XSim instead of VCS, with minor improvements to the README.
 
 # README
 
