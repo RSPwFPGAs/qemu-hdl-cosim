@@ -15,12 +15,12 @@ This repository contains work by `COMPAS Lab`. The original project introduction
 The [demo code](https://compas.cs.stonybrook.edu/wordpress/wp-content/uploads/2018/02/cosim_release_fpga2018.tar.gz) is ported here to use Vivado XSim instead of VCS, with minor improvements to the README.
 This example source release is the cosim demo for an accelerated sorting application.
 
-Install Tools
+Tools to use
 ----------------------------
 This release has been tested with the following tools and libs:
 >
 >```
->Linux 18.04.3
+>Ubuntu 18.04.3
 >Vivado 2018.3
 >QEMU 2.10 rc3
 >```
