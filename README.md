@@ -2,7 +2,7 @@
 
 # Table of Contents
 1. [Overview of qemu-hdl-cosim](#overview)
-2. [Install Qemu and Create a VM image on Host](#installhost)
+2. [Install Qemu and Create a VM image](#installhost)
 3. [Run Co-Simulation](#runcosim)
     - [Run Vivado Xsim in Host](#runxsim)
     - [Run application in Guest](#runapp)
@@ -35,7 +35,7 @@ Environment variables to set
 >```
 
 <a name="installhost"></a>
-# Install Qemu and Create a VM image on Host
+# Install Qemu and Create a VM image
 
 Compile QEMU
 ----------------------------
