@@ -34,6 +34,11 @@ Environment variables to set
 >              the same machine, each one needs to have a different number.
 >```
 
+ToDo List
+----------------------------
+Support Verilator/IVerilog as HDL simulator engine and GTKWave as waveform viewer.
+
+
 <a name="installhost"></a>
 # Install Qemu and Create a VM image
 
